@@ -3,9 +3,11 @@
 
 import random
 import networkx as nx
-
+from Archivist import Archivist
 
 max_weight = 10
+log = Archivist()
+log.open_file('log.txt')
 
 
 def generate_sites(n: int, m: int):
@@ -24,47 +26,46 @@ def generate_sites(n: int, m: int):
 # et on recommence jusqu'à que tous les sommets soient distribués
 def sequential_auctions(agents: [int], sites: nx.Graph) -> {int: [int]}:
     res = {}
-    # nodes = list(sites.nodes())
     free_nodes = list(sites.nodes())
 
     # init agents location
     for a in agents:
         s_len = len(free_nodes)
         idx = random.randint(0, s_len-1)
-
         node = free_nodes.pop(idx)
         res.update({a: [node]})
 
     weight = max_weight
-    while len(free_nodes) != 0:
+    while free_nodes:
         # for each agent, check the neighbours of the owned nodes, and bid on the one with the smallest weight
-        print('\nfree_nodes: ' + str(free_nodes))
+        log.log('\nfree_nodes: ' + str(free_nodes))
+        auctions = {}
         for a in agents:
-            auctions = {}
             nodes = res[a]
             best_node = None
             for node in nodes:
                 neighbours = sites.neighbors(node)
                 for neighbour in neighbours:
+                    log.log('neighbour: ' + str(neighbour) + ', free nodes: ' + str(free_nodes))
                     if neighbour in free_nodes:
                         tmp_weight = sites[node][neighbour]['weight']
-                        if tmp_weight < max_weight:
+                        if tmp_weight < weight:
                             weight = tmp_weight
                             best_node = neighbour
 
-            """ ****************************************************************** """
-            """ ****************************************************************** """
-            """ ****************************************************************** """
-            # in case of a node without neighbours
-            # the algo crashes
-            # check the form of the graph
-            # and solve that shit
-            """ ****************************************************************** """
-            """ ****************************************************************** """
-            """ ****************************************************************** """
-
-            if best_node is None and len(free_nodes) == 1:
-                return res
+            # """ ****************************************************************** """
+            # """ ****************************************************************** """
+            # """ ****************************************************************** """
+            # # in case of a node without neighbours
+            # # the algo crashes
+            # # check the form of the graph
+            # # and solve that shit
+            # """ ****************************************************************** """
+            # """ ****************************************************************** """
+            # """ ****************************************************************** """
+            #
+            # if best_node is None and len(free_nodes) == 1:
+            #     return res
 
             auctions.update({a: (weight, best_node)})
 
@@ -79,7 +80,7 @@ def sequential_auctions(agents: [int], sites: nx.Graph) -> {int: [int]}:
                     min_weights = w
                     winners.append((k, auctions[k][1]))
 
-            print('winners: ' + str(winners))
+            log.log('winners: ' + str(winners))
             # elect one winner between them all
             win_len = len(winners)
             if win_len == 1:
@@ -88,18 +89,49 @@ def sequential_auctions(agents: [int], sites: nx.Graph) -> {int: [int]}:
                 winner = winners[random.randint(0, win_len-1)]
 
             # update the result list
-            print('winner: ' + str(winner))
-            winner_nodes = res[winner[0]]
-            winner_nodes.append(winner[1])
-            print('winner[0]: ' + str(winner[0]))
-            res.update({winner[0]: winner_nodes})
+            log.log('winner: ' + str(winner))
+            agent = winner[0]
+            node = winner[1]
+            winner_nodes = res[agent]
+            winner_nodes.append(node)
+            res.update({agent: winner_nodes})
             # remove the won node from the list of free nodes
-            free_nodes.remove(winner[1])
 
+            log.log('free nodes: ' + str(free_nodes))
+            free_nodes.remove(node)
+            log.log('free nodes: ' + str(free_nodes))
+            log.log('restart while loop')
     return res
+
+
+def aff_graph(g: nx.Graph):
+    nodes = list(g.nodes())
+    edges = g.edges()
+    str('nodes:')
+    for n in nodes:
+        log.log('n: ' + str(n))
+
+    str('edges:')
+    for e in edges:
+        log.log('e: ' + str(e))
+
+    str('weights:')
+    for e in edges:
+        x = e[0]
+        y = e[1]
+        log.log('g[' + str(x) + '][' + str(y) + '][weight]: ' + str(g[x][y]['weight']))
 
 
 vertex = 7
 g = generate_sites(vertex, 2*vertex-2)
-results = sequential_auctions([0, 1], g)
-print('results' + str(results))
+
+while not nx.is_connected(g):
+    g = generate_sites(vertex, 2*vertex-2)
+# aff_graph(g)
+# nx.draw(g)
+
+agents = [0, 1]
+results = sequential_auctions(agents, g)
+log.log('results' + str(results))
+
+log.close()
