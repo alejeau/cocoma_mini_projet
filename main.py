@@ -69,38 +69,38 @@ def sequential_auctions(agents: [int], sites: nx.Graph) -> {int: [int]}:
 
             auctions.update({a: (weight, best_node)})
 
-            # get the winners that bid on the smallest weight
-            min_weights = max_weight
-            winners = []
-            for k in auctions.keys():
-                w = auctions[k][0]
-                if w <= min_weights:
-                    if w < min_weights:
-                        winners = []
-                    min_weights = w
-                    winners.append((k, auctions[k][1]))
+        # get the winners that bid on the smallest weight
+        min_weights = max_weight
+        winners = []
+        for k in auctions.keys():
+            w = auctions[k][0]
+            if w <= min_weights:
+                if w < min_weights:
+                    winners = []
+                min_weights = w
+                winners.append((k, auctions[k][1]))
 
-            log.log('winners: ' + str(winners))
-            # elect one winner between them all
-            win_len = len(winners)
-            if win_len == 1:
-                winner = winners[0]
-            else:
-                winner = winners[random.randint(0, win_len-1)]
+        log.log('winners: ' + str(winners))
+        # elect one winner between them all
+        win_len = len(winners)
+        if win_len == 1:
+            winner = winners[0]
+        else:
+            winner = winners[random.randint(0, win_len-1)]
 
-            # update the result list
-            log.log('winner: ' + str(winner))
-            agent = winner[0]
-            node = winner[1]
-            winner_nodes = res[agent]
-            winner_nodes.append(node)
-            res.update({agent: winner_nodes})
-            # remove the won node from the list of free nodes
+        # update the result list
+        log.log('winner: ' + str(winner))
+        agent = winner[0]
+        node = winner[1]
+        winner_nodes = res[agent]
+        winner_nodes.append(node)
+        res.update({agent: winner_nodes})
+        # remove the won node from the list of free nodes
 
-            log.log('free nodes: ' + str(free_nodes))
-            free_nodes.remove(node)
-            log.log('free nodes: ' + str(free_nodes))
-            log.log('restart while loop')
+        log.log('free nodes: ' + str(free_nodes))
+        free_nodes.remove(node)
+        log.log('free nodes: ' + str(free_nodes))
+        log.log('restart while loop')
     return res
 
 
