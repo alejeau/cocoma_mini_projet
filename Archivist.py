@@ -11,7 +11,7 @@ class Archivist:
     def open_file(self, filename):
         self.file = open(filename, 'w')
 
-    def log(self, text: str):
+    def log(self, text):
         line = str(text) + '\n'
         self.file.write(line)
 
