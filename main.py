@@ -38,7 +38,6 @@ def sequential_auctions(agents, sites):
         
     print('free_nodes: ' + str(free_nodes))
     print('res: ' + str(res))
-        
 
     while free_nodes:
         # for each agent, check the neighbours of the owned nodes, and bid on the one with the smallest weight
@@ -46,8 +45,8 @@ def sequential_auctions(agents, sites):
         auctions = {}
         for agent in agents:
             agent_nodes = res[agent]
+            interesting_couples = set()
             for node in agent_nodes:
-                interesting_couples = set()
                 neighbours = sites.neighbors(node)
 #                for neighbour in neighbours:
 #                    neighbouring_nodes.add(neighbour)
@@ -72,7 +71,6 @@ def sequential_auctions(agents, sites):
         # get the winners that bid on the smallest weight
         min_weight = max_weight
         winners = []
-        winner = None
         for k in auctions.keys():
             w = auctions[k][2]
             if w <= min_weight:
@@ -84,6 +82,7 @@ def sequential_auctions(agents, sites):
         print('winners: ' + str(winners))
         # elect one winner between them all
         win_len = len(winners)
+        winner = None
         if win_len == 1:
             winner = winners[0]
         else:
