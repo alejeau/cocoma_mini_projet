@@ -1,24 +1,26 @@
 #!/usr/bin/python3
 # -*-coding: utf-8 -*
 
+import copy
 import random
 import networkx as nx
+
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
+"""                                       still somewhat bugged                                                      """
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
 
 
 # enchères séquentielles : protocole :
 # chaque agent fait une offre pour le sommet de coût minimum pour chaque sommet contôllé par l'agent
 # un commissaire octroi l'offre de coût minimum à l'agent qui l'a faite
 # et on recommence jusqu'à que tous les sommets soient distribués
-def sequential_auctions(agents: [int], sites: nx.Graph, max_weight):
-    res = {}
-    free_nodes = list(sites.nodes())
-
-    # init agents location
-    for a in agents:
-        s_len = len(free_nodes)
-        idx = random.randint(0, s_len - 1)
-        node = free_nodes.pop(idx)
-        res.update({a: [node]})
+def sequential_auctions(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
+    res = copy.deepcopy(positions)
+    free_nodes = copy.deepcopy(free_sites)
 
     while free_nodes:
         # for each agent, check the neighbours of the owned nodes, and bid on the one with the smallest weight
@@ -55,7 +57,9 @@ def sequential_auctions(agents: [int], sites: nx.Graph, max_weight):
 
         # elect one winner between them all
         win_len = len(winners)
-        if win_len == 1:
+        if win_len == 0:
+            break
+        elif win_len == 1:
             winner = winners[0]
         else:
             winner = winners[random.randint(0, win_len - 1)]
