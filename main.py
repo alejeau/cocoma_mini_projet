@@ -12,14 +12,17 @@ log.open_file('log.txt')
 
 
 def initializer():
-    vertex = 7
+    number_of_agents = 2
+    vertices_number = 7
+    edges_number = (vertices_number * (vertices_number - 1)) / 2
     max_weight = 10
-    sites = tools.generate_sites(vertex, 2 * vertex - 2, max_weight)
+    agents = [i for i in range(number_of_agents)]
+
+    sites = tools.generate_sites(vertices_number, edges_number, max_weight)
 
     while not nx.is_connected(sites):
-        sites = tools.generate_sites(vertex, 2 * vertex - 2, max_weight)
+        sites = tools.generate_sites(vertices_number, edges_number, max_weight)
 
-    agents = [0, 1]
     positions, free_sites = tools.place_agents(agents, sites)
 
     return agents, sites, positions, free_sites, max_weight

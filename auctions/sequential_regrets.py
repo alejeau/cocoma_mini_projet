@@ -11,7 +11,7 @@ def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {
 
     while free_nodes:
         # for each agent, check the neighbours of the owned nodes, and bid on the one with the smallest weight
-        auctions = {int: []}
+        auctions = {}
         for agent in agents:
             agent_nodes = res[agent]
             interesting_couples = set()
@@ -27,28 +27,39 @@ def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {
                 node = ic[0]
                 free_node = ic[1]
                 weight = sites[node][free_node]['weight']
-                auction = auctions.get(free_node, [])
-                auction.append((weight, agent))
+                auction = auctions.get(free_node, {})
+                agent_found = False
+                for k in auction.keys():
+                    if agent == k:
+                        agent_found = True
+                        if weight < auction[k]:
+                            auction[k] = weight
+                            break
+                if not agent_found:
+                    auction.update({agent: weight})
                 auctions.update({free_node: auction})
 
         regrets = {}
         for free_node in auctions.keys():
-            auction_list = auctions[free_node]
-            min_weight = max_weight + 1
-            min_auction = ()
-            for auction in auction_list:
-                if auction[0] < min_weight:
-                    min_weight = auction[0]
-                    min_auction = auction
+            auction_dict = auctions[free_node]
+            if auction_dict:
+                min_weight = max_weight + 1
+                min_auction = ()
+                for tmp_agent in auction_dict.keys():
+                    tmp_weight = auction_dict[tmp_agent]
+                    if tmp_weight < min_weight:
+                        min_weight = tmp_weight
+                        min_auction = (tmp_weight, tmp_agent)
 
-            auction_list.remove(min_auction)
-            min_weight = max_weight + 1
-            for auction in auction_list:
-                if auction[0] < min_weight:
-                    min_weight = auction[0]
-            regret = min_weight - min_auction[0]
-            agent = min_auction[1]
-            regrets.update({free_node: (regret, agent)})
+                auction_dict.pop(min_auction[1])
+                min_weight = max_weight + 1
+                for tmp_agent in auction_dict.keys():
+                    tmp_weight = auction_dict[tmp_agent]
+                    if tmp_weight < min_weight:
+                        min_weight = tmp_weight
+                regret = min_weight - min_auction[0]
+                agent = min_auction[1]
+                regrets.update({free_node: (regret, agent)})
 
         node = None
         winner = None
