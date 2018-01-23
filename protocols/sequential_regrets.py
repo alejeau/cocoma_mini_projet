@@ -4,6 +4,14 @@
 import copy
 import networkx as nx
 
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
+"""                                       still somewhat bugged                                                      """
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
+""" **************************************************************************************************************** """
+
 
 def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
     res = copy.deepcopy(positions)
@@ -22,7 +30,7 @@ def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {
                         interesting_couples.add((node, free_node))
 
             interesting_couples = list(interesting_couples)
-            # for each free_node, add the related auctions
+            # for each free_node, add the related protocols
             for ic in interesting_couples:
                 node = ic[0]
                 free_node = ic[1]

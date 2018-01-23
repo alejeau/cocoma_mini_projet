@@ -3,7 +3,7 @@
 
 import networkx as nx
 from tools import tools
-from auctions import sequential, sequential_regrets
+from protocols import sequential, sequential_regrets
 from Archivist import Archivist
 
 
