@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # -*-coding: utf-8 -*
 
+import random as rand
 import networkx as nx
 from tools import tools
-from protocols import sequential, sequential_regrets
+from protocols import sequential, sequential_regrets, yankee_swap
 from Archivist import Archivist
 
 
@@ -38,6 +39,24 @@ def main_sequential_regrets(agents, sites, positions, free_sites, max_weight):
     print('results: ' + str(results))
 
 
+def main_yankee_swap():
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    number_of_participants = 6
+    participants = [letters[i] for i in range(number_of_participants)]
+    gifts = [i for i in range(number_of_participants)]
+    utilities = {}
+    for p in participants:
+        utility = [rand.randint(1, 10) for _ in range(number_of_participants)]
+        utilities.update({p: utility})
+
+    print('participants: ' + str(participants))
+    print('gifts: ' + str(gifts))
+    print('utilities' + str(utilities))
+
+    results = yankee_swap.yankee_swap(participants, gifts, utilities)
+    print('results: ' + str(results))
+
+
 def main():
     agents, sites, positions, free_sites, max_weight = initializer()
 
@@ -45,5 +64,6 @@ def main():
     main_sequential_regrets(agents, sites, positions, free_sites, max_weight)
 
 
-main()
+# main()
+main_yankee_swap()
 log.close()
