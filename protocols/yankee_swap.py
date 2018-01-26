@@ -8,8 +8,10 @@ import copy
 def yankee_swap(participants, gifts, utilities):
     """
     Implements the yankee swap protocol for x agents and x wrapped gifts.
+    The gifts are chosen based on the maximum utility.
 
-    Each gift can only be stolen once per turn. None of the function's parameters will be modified.
+    Each gift can only be stolen once per turn, and three times total.
+    None of the function's parameters will be modified.
 
     Parameters
     ----------
@@ -23,7 +25,7 @@ def yankee_swap(participants, gifts, utilities):
 
     Returns
     -------
-    {str: int}
+    {str: [int]}
         a dict with the agent as key and the gift as value
     """
     agents = tuple(participants)
@@ -34,32 +36,39 @@ def yankee_swap(participants, gifts, utilities):
     allocations = {}
 
     for agent in agents:
-        allocations.update({agent: -1})
-
-    while wrapped_gifts:
+        allocations.update({agent: []})
+    list_empty = False
+    while wrapped_gifts and not list_empty:
         for i in range(len(agents)):
             agent = agents[i]
-            if allocations[agent] == -1:
-                best_gift = -1
-                agent_utilities = utilities[agent]
-                avg_utility = sum(agent_utilities) / len(agent_utilities)
-                for gift in unwrapped_gifts:
-                    if frozen_gitfs.get(gift, 0) < 3 and gift not in locked_gifts and agent_utilities[gift] > avg_utility:
-                        if best_gift == -1:
-                            best_gift = gift
-                        elif agent_utilities[gift] > agent_utilities[best_gift]:
-                            best_gift = gift
-
-                if best_gift != -1:
-                    locked_gifts.append(best_gift)
-                    tmp = frozen_gitfs.get(best_gift, 0)
-                    frozen_gitfs.update({best_gift: tmp+1})
-                    for tmp in agents:
-                        if allocations[tmp] == best_gift:
-                            allocations.update({tmp: -1})
-                else:
+            best_gift = -1
+            agent_utilities = utilities[agent]
+            avg_utility = sum(agent_utilities) / len(agent_utilities)
+            for gift in unwrapped_gifts:
+                if frozen_gitfs.get(gift, 0) < 3 and gift not in locked_gifts and agent_utilities[gift] > avg_utility:
+                    if best_gift == -1:
+                        best_gift = gift
+                    elif agent_utilities[gift] > agent_utilities[best_gift]:
+                        best_gift = gift
+                        
+            # if we chose to steal a gift
+            if best_gift != -1:
+                locked_gifts.append(best_gift)
+                tmp = frozen_gitfs.get(best_gift, 0)
+                frozen_gitfs.update({best_gift: tmp+1})
+                for tmp in agents:
+                    if best_gift in allocations[tmp]:
+                        gift_list = allocations[tmp]
+                        gift_list.remove(best_gift)
+                        allocations.update({tmp: gift_list})
+            else:
+                if len(wrapped_gifts) > 0:
                     best_gift = wrapped_gifts.pop(0)
                     unwrapped_gifts.append(best_gift)
-                allocations.update({agent: best_gift})
+                else:
+                    list_empty = True
+            gift_list = allocations.get(agent, [])
+            gift_list.append(best_gift)
+            allocations.update({agent: gift_list})
         locked_gifts = []
     return allocations
