@@ -18,7 +18,8 @@ import networkx as nx
 # chaque agent fait une offre pour le sommet de coût minimum pour chaque sommet contôllé par l'agent
 # un commissaire octroi l'offre de coût minimum à l'agent qui l'a faite
 # et on recommence jusqu'à que tous les sommets soient distribués
-def sequential_auctions(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
+#def sequential_auctions(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
+def sequential_auctions(agents, sites, positions, free_sites, max_weight):
     res = copy.deepcopy(positions)
     free_nodes = copy.deepcopy(free_sites)
 

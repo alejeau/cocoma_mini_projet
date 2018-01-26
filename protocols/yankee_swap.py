@@ -4,7 +4,8 @@
 import copy
 
 
-def yankee_swap(participants: [str], gifts: [int], utilities: {str: [int]}) -> {str: int}:
+#def yankee_swap(participants: [str], gifts: [int], utilities: {str: [int]}) -> {str: int}:
+def yankee_swap(participants, gifts, utilities):
     """
     Implements the yankee swap protocol for x agents and x wrapped gifts.
 

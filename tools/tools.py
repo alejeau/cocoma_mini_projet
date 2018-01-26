@@ -16,12 +16,14 @@ def generate_sites(n, m, max_weight):
     return g
 
 
-def draw_graph(g: nx.Graph):
+#def draw_graph(g: nx.Graph):
+def draw_graph(g):
     nx.draw(g)
     plt.show()
 
 
-def aff_graph(graph: nx.Graph):
+#def aff_graph(graph: nx.Graph):
+def aff_graph(graph):
     nodes = list(graph.nodes())
     edges = graph.edges()
     str('nodes:')
@@ -39,7 +41,8 @@ def aff_graph(graph: nx.Graph):
         print('graph[' + str(x) + '][' + str(y) + '][weight]: ' + str(graph[x][y]['weight']))
 
 
-def place_agents(agents: [int], sites: nx.Graph):
+#def place_agents(agents: [int], sites: nx.Graph):
+def place_agents(agents, sites):
     # init agents location
     positions = {}
     free_sites = list(sites.nodes())
