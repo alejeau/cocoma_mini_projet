@@ -37,15 +37,15 @@ def yankee_swap(participants, gifts, utilities):
 
     for agent in agents:
         allocations.update({agent: []})
-    list_empty = False
-    while wrapped_gifts and not list_empty:
+        
+    while wrapped_gifts:
         for i in range(len(agents)):
             agent = agents[i]
             best_gift = -1
             agent_utilities = utilities[agent]
             avg_utility = sum(agent_utilities) / len(agent_utilities)
             for gift in unwrapped_gifts:
-                if frozen_gitfs.get(gift, 0) < 3 and gift not in locked_gifts and agent_utilities[gift] > avg_utility:
+                if frozen_gitfs.get(gift, 0) < 3 and gift not in locked_gifts and agent_utilities[gift] < avg_utility:
                     if best_gift == -1:
                         best_gift = gift
                     elif agent_utilities[gift] > agent_utilities[best_gift]:
@@ -66,7 +66,7 @@ def yankee_swap(participants, gifts, utilities):
                     best_gift = wrapped_gifts.pop(0)
                     unwrapped_gifts.append(best_gift)
                 else:
-                    list_empty = True
+                    return allocations
             gift_list = allocations.get(agent, [])
             gift_list.append(best_gift)
             allocations.update({agent: gift_list})
