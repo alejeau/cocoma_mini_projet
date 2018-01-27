@@ -2,8 +2,7 @@
 # -*-coding: utf-8 -*
 
 
-# def tour_cost(tour: {str: [int]}) -> {str: int}:
-def tour_cost(tour):
+def tour_cost(tour: {str: [int]}) -> {str: int}:
     costs = {}
     for agent in tour.keys():
         cost = len(tour[agent])
@@ -12,6 +11,5 @@ def tour_cost(tour):
     return costs
 
 
-# def egalitarian_social_welfare(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: int}:
-def egalitarian_social_welfare(allocations, utilities):
+def egalitarian_social_welfare(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: int}:
     pass

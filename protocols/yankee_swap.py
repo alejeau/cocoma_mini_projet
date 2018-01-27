@@ -4,8 +4,7 @@
 import copy
 
 
-# def yankee_swap(participants: [str], gifts: [int], utilities: {str: [int]}) -> {str: int}:
-def yankee_swap(participants, gifts, utilities):
+def yankee_swap(participants: [str], gifts: [int], utilities: {str: [int]}) -> {str: int}:
     """
     Implements the yankee swap protocol for n agents and m wrapped gifts.
     The gifts are chosen based on the maximum utility.

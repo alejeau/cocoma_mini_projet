@@ -13,8 +13,7 @@ import networkx as nx
 """ **************************************************************************************************************** """
 
 
-#def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
-def sequential_auctions_with_regret(agents, sites, positions, free_sites, max_weight):
+def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
     res = copy.deepcopy(positions)
     free_nodes = copy.deepcopy(free_sites)
 
