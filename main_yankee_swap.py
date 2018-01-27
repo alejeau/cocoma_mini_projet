@@ -3,7 +3,7 @@
 
 import numpy as np
 import random as rand
-#from tools import tools
+from protocols.tools import yankee_tools
 from protocols import yankee_swap
 from Archivist import Archivist
 
@@ -24,12 +24,17 @@ def main_yankee_swap():
         utility = [rand.randint(1, utility_max) for _ in range(number_of_gifts)]
         utilities.update({p: utility})
 
-    print('participants: ' + str(participants))
-    print('gifts: ' + str(gifts))
-    print('utilities' + str(utilities))
+    # print('participants: ' + str(participants))
+    # print('gifts: ' + str(gifts))
+    # print('utilities' + str(utilities))
 
     results = yankee_swap.yankee_swap(participants, gifts, utilities)
     print('results: ' + str(results))
+
+    touring_costs = yankee_tools.tour_cost(results)
+    print('touring_costs: ')
+    for agent in sorted(touring_costs.keys()):
+        print('\t' + str(agent) + ': ' + str(touring_costs[agent]))
 
 
 main_yankee_swap()
