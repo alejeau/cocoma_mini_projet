@@ -110,25 +110,51 @@ def proportional_fair_share(allocations: {str: [int]}, tour_costs: {str: [int]},
     return pfs
 
 
-def envy_freeness(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [([int], int)]}:
+def allocation_cost(allocation: [int], utilities: {(int, int): int}) -> int:
+    if len(allocation) == 1:
+        return 0
+    else:
+        free_nodes = copy.deepcopy(allocation)
+        nodes = [free_nodes.pop(0)]
+        total_cost = 0
+        while free_nodes:
+            min_cost = max(utilities.values())
+            best_node = None
+            for node in nodes:
+                for free_node in free_nodes:
+                    cost = utilities[(node, free_node)]
+                    if cost <= min_cost:
+                        min_cost = cost
+                        best_node = free_node
+
+            idx = free_nodes.index(best_node)
+            nodes.append(free_nodes.pop(idx))
+            total_cost += min_cost
+        return total_cost
+
+
+def envy_freeness(allocations: {str: [int]}, tour_costs: {str: [int]}, utilities: {(int, int): int}) -> {int: [(int, [int], int)]}:
+    """
+
+    :param allocations:
+    :param tour_costs:
+    :param utilities:
+    :return:
+        {int: [(int, [int], int)]} a dictionary formed as follow : {agent: [(agent's allocation, allocation, score)]}
+    """
     envious_agents = {}
 
-    # utility_scores = {}
-    # for agent in allocations.keys():
-    #     score = utility_score(allocations[agent], utilities[agent])
-    #     utility_scores.update({agent: score})
-    #
-    # for agent in allocations.keys():
-    #     better_allocations = []
-    #     utility = utilities[agent]
-    #     agent_score = utility_scores[agent]
-    #     for other in allocations.keys():
-    #         if agent != other:
-    #             allocation = allocations[other]
-    #             score = utility_score(allocation, utility)
-    #             if score < agent_score:
-    #                 better_allocations.append((agent, allocation, score))
-    #         if len(better_allocations) > 0:
-    #             envious_agents.update({agent: better_allocations})
+    for agent in allocations.keys():
+        better_allocations = []
+        utility = sum(tour_costs[agent])
+        agent_score = utility
+        for other in allocations.keys():
+            if agent != other:
+                allocation = allocations[other]
+                score = allocation_cost(allocation, utilities)
+                if score < agent_score:
+                    better_allocations.append((agent, allocation, score))
+            if len(better_allocations) > 0:
+                envious_agents.update({agent: better_allocations})
 
     return envious_agents

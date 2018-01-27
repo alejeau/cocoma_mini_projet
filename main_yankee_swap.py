@@ -34,6 +34,14 @@ def main_yankee_swap():
         print('\t' + str(agent) + ', score: ' + str(score))
         print('\t' + str(agent) + ': ' + str(esw[agent]))
 
+    pfs = yankee_tools.proportional_fair_share(allocations, utilities)
+    print('\nProportional fair share: ')
+    for agent in sorted(pfs.keys()):
+        share = pfs[agent]
+        fairness = 'fair' if share[2] else 'unfair'
+        utility = yankee_tools.allocation_utility(allocations[agent], utilities[agent])
+        print('\tThe allocation for agent \'' + str(agent) + '\' with value ' + str(utility) + ' is ' + fairness + ' ' + str(share))
+
     envy = yankee_tools.envy_freeness(allocations, utilities)
     if envy:
         print('\nEnvy freeness: ')
@@ -43,14 +51,6 @@ def main_yankee_swap():
             print('\t' + str(agent) + ': ' + str(envy[agent]))
     else:
         print('\nThe allocation is envy-free')
-
-    pfs = yankee_tools.proportional_fair_share(allocations, utilities)
-    print('\nProportional fair share: ')
-    for agent in sorted(pfs.keys()):
-        share = pfs[agent]
-        fairness = 'fair' if share[2] else 'unfair'
-        utility = yankee_tools.allocation_utility(allocations[agent], utilities[agent])
-        print('\tThe allocation for agent \'' + str(agent) + '\' with value ' + str(utility) + ' is ' + fairness + ' ' + str(share))
 
 
 def main_tools_testing():
