@@ -1,6 +1,33 @@
 #!/usr/bin/python3
 # -*-coding: utf-8 -*
 
+import numpy as np
+import random as rand
+
+
+def random_utilities(participants: [str], number_of_gifts: int, max_utility=None) -> {str: [int]}:
+    if max_utility is None:
+        max_utility = number_of_gifts + np.floor(number_of_gifts/2)
+    utilities = {}
+    for p in participants:
+        utility = [rand.randint(1, max_utility) for _ in range(number_of_gifts)]
+        utilities.update({p: utility})
+
+    return utilities
+
+
+def normalized_utilities(participants: [str], number_of_gifts: int) -> {str: [int]}:
+    utilities = {}
+    for p in participants:
+        base_utility = [i for i in range(number_of_gifts)]
+        utility = []
+        for _ in range(number_of_gifts):
+            u = base_utility.pop(rand.randint(0, len(base_utility))-1)
+            utility.append(u)
+        utilities.update({p: utility})
+
+    return utilities
+
 
 def tour_cost(tour: {str: [int]}) -> {str: int}:
     costs = {}
@@ -47,6 +74,20 @@ def egalitarian_social_welfare(allocations: {str: [int]}, utilities: {str: [int]
             wronged_agents.update({woa: better_allocations})
 
     return wronged_agents
+
+
+def proportional_fair_share(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [([int], int)]}:
+    pfs = {}
+    agents = allocations.keys()
+    number_of_agents = len(agents)
+    for agent in agents:
+        share = sum(utilities[agent]) / number_of_agents
+        utility = utilities[agent]
+        allocation = allocations[agent]
+        prop = True if utility_score(allocation, utility) <= share else False
+        pfs.update({agent: (share, allocation, prop)})
+
+    return pfs
 
 
 def envy_freeness(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [([int], int)]}:
