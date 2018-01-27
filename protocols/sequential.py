@@ -13,20 +13,24 @@ import networkx as nx
 """ **************************************************************************************************************** """
 """ **************************************************************************************************************** """
 
-
+"""
 # enchères séquentielles : protocole :
 # chaque agent fait une offre pour le sommet de coût minimum pour chaque sommet contôllé par l'agent
 # un commissaire octroi l'offre de coût minimum à l'agent qui l'a faite
 # et on recommence jusqu'à que tous les sommets soient distribués
+"""
+
+
 def sequential_auctions(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
-    res = copy.deepcopy(positions)
+    allocations = copy.deepcopy(positions)
     free_nodes = copy.deepcopy(free_sites)
+    tour_costs = {agent: [0] for agent in agents}
 
     while free_nodes:
         # for each agent, check the neighbours of the owned nodes, and bid on the one with the smallest weight
         auctions = {}
         for agent in agents:
-            agent_nodes = res[agent]
+            agent_nodes = allocations[agent]
             interesting_couples = set()
             for node in agent_nodes:
                 neighbours = sites.neighbors(node)
@@ -67,10 +71,13 @@ def sequential_auctions(agents: [int], sites: nx.Graph, positions: {}, free_site
         # update the result list
         agent = winner[0]
         node = winner[1]
-        winner_nodes = res[agent]
+        winner_nodes = allocations[agent]
         winner_nodes.append(node)
-        res.update({agent: winner_nodes})
+        allocations.update({agent: winner_nodes})
+        tour_cost = tour_costs[agent]
+        tour_cost.append(min_weight)
+        tour_costs.update({agent: tour_cost})
         # remove the won node from the list of free nodes
         free_nodes.remove(node)
 
-    return res
+    return allocations, tour_costs

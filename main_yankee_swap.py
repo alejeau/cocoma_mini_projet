@@ -1,18 +1,19 @@
 #!/usr/bin/python3
 # -*-coding: utf-8 -*
 
-from protocols.tools import yankee_tools
+from tools import tools
 from protocols import yankee_swap
+from protocols.tools import yankee_tools
 
 
 def main_yankee_swap():
     letters = 'abcdefghijklmnopqrstuvwxyz'
     number_of_participants = 6
-    number_of_gifts = 12
+    number_of_gifts = 13
     participants = [letters[i] for i in range(number_of_participants)]
     gifts = [i for i in range(number_of_gifts)]
-    # utilities = yankee_tools.random_utilities(participants, number_of_gifts)
-    utilities = yankee_tools.normalized_utilities(participants, number_of_gifts)
+    # utilities = tools.random_utilities(participants, number_of_gifts)
+    utilities = tools.normalized_utilities(participants, number_of_gifts)
 
     print('participants: ' + str(participants))
     print('gifts: ' + str(gifts))
@@ -29,7 +30,7 @@ def main_yankee_swap():
     esw = yankee_tools.egalitarian_social_welfare(allocations, utilities)
     print('\nEgalitarian social welfare: ')
     for agent in sorted(esw.keys()):
-        score = yankee_tools.utility_score(allocations[agent], utilities[agent])
+        score = yankee_tools.allocation_utility(allocations[agent], utilities[agent])
         print('\t' + str(agent) + ', score: ' + str(score))
         print('\t' + str(agent) + ': ' + str(esw[agent]))
 
@@ -37,7 +38,7 @@ def main_yankee_swap():
     if envy:
         print('\nEnvy freeness: ')
         for agent in sorted(envy.keys()):
-            score = yankee_tools.utility_score(allocations[agent], utilities[agent])
+            score = yankee_tools.allocation_utility(allocations[agent], utilities[agent])
             print('\t' + str(agent) + ', score: ' + str(score))
             print('\t' + str(agent) + ': ' + str(envy[agent]))
     else:
@@ -48,9 +49,8 @@ def main_yankee_swap():
     for agent in sorted(pfs.keys()):
         share = pfs[agent]
         fairness = 'fair' if share[2] else 'unfair'
-        utility = yankee_tools.utility_score(allocations[agent], utilities[agent])
+        utility = yankee_tools.allocation_utility(allocations[agent], utilities[agent])
         print('\tThe allocation for agent \'' + str(agent) + '\' with value ' + str(utility) + ' is ' + fairness + ' ' + str(share))
-
 
 
 def main_tools_testing():
@@ -74,7 +74,7 @@ def main_tools_testing():
     esw = yankee_tools.egalitarian_social_welfare(allocations, utilities)
     print('Egalitarian social welfare: ')
     for agent in sorted(esw.keys()):
-        score = yankee_tools.utility_score(allocations[agent], utilities[agent])
+        score = yankee_tools.allocation_utility(allocations[agent], utilities[agent])
         print('\t' + str(agent) + ', score: ' + str(score))
         print('\t' + str(agent) + ': ' + str(esw[agent]))
 
@@ -82,7 +82,7 @@ def main_tools_testing():
     if envy:
         print('Envy freeness: ')
         for agent in sorted(envy.keys()):
-            score = yankee_tools.utility_score(allocations[agent], utilities[agent])
+            score = yankee_tools.allocation_utility(allocations[agent], utilities[agent])
             print('\t' + str(agent) + ', score: ' + str(score))
             print('\t' + str(agent) + ': ' + str(envy[agent]))
     else:

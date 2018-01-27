@@ -1,9 +1,34 @@
 #!/usr/bin/python3
 # -*-coding: utf-8 -*
 
-import random
+import numpy as np
+import random as rand
 import networkx as nx
 import matplotlib.pyplot as plt
+
+
+def random_utilities(participants: [str], number_of_gifts: int, max_utility=None) -> {str: [int]}:
+    if max_utility is None:
+        max_utility = number_of_gifts + np.floor(number_of_gifts/2)
+    utilities = {}
+    for p in participants:
+        utility = [rand.randint(1, max_utility) for _ in range(number_of_gifts)]
+        utilities.update({p: utility})
+
+    return utilities
+
+
+def normalized_utilities(participants: [str], number_of_gifts: int) -> {str: [int]}:
+    utilities = {}
+    for p in participants:
+        base_utility = [i for i in range(number_of_gifts)]
+        utility = []
+        for _ in range(number_of_gifts):
+            u = base_utility.pop(rand.randint(0, len(base_utility))-1)
+            utility.append(u)
+        utilities.update({p: utility})
+
+    return utilities
 
 
 def generate_sites(n, m, max_weight):
@@ -11,19 +36,17 @@ def generate_sites(n, m, max_weight):
     for e in list(g.edges()):
         x = e[0]
         y = e[1]
-        g[x][y]['weight'] = random.randint(1, max_weight)
+        g[x][y]['weight'] = rand.randint(1, max_weight)
 
     return g
 
 
-#def draw_graph(g: nx.Graph):
-def draw_graph(g):
+def draw_graph(g: nx.Graph):
     nx.draw(g)
     plt.show()
 
 
-#def aff_graph(graph: nx.Graph):
-def aff_graph(graph):
+def aff_graph(graph: nx.Graph):
     nodes = list(graph.nodes())
     edges = graph.edges()
     str('nodes:')
@@ -41,15 +64,14 @@ def aff_graph(graph):
         print('graph[' + str(x) + '][' + str(y) + '][weight]: ' + str(graph[x][y]['weight']))
 
 
-#def place_agents(agents: [int], sites: nx.Graph):
-def place_agents(agents, sites):
+def place_agents(agents: [int], sites: nx.Graph):
     # init agents location
     positions = {}
     free_sites = list(sites.nodes())
 
     for a in agents:
         s_len = len(free_sites)
-        idx = random.randint(0, s_len - 1)
+        idx = rand.randint(0, s_len - 1)
         node = free_sites.pop(idx)
         positions.update({a: [node]})
 

@@ -1,32 +1,13 @@
 #!/usr/bin/python3
 # -*-coding: utf-8 -*
 
-import numpy as np
-import random as rand
 
+def allocation_utility(allocation: [int], utility: [int]) -> int:
+    score = 0
+    for a in allocation:
+        score += utility[a]
 
-def random_utilities(participants: [str], number_of_gifts: int, max_utility=None) -> {str: [int]}:
-    if max_utility is None:
-        max_utility = number_of_gifts + np.floor(number_of_gifts/2)
-    utilities = {}
-    for p in participants:
-        utility = [rand.randint(1, max_utility) for _ in range(number_of_gifts)]
-        utilities.update({p: utility})
-
-    return utilities
-
-
-def normalized_utilities(participants: [str], number_of_gifts: int) -> {str: [int]}:
-    utilities = {}
-    for p in participants:
-        base_utility = [i for i in range(number_of_gifts)]
-        utility = []
-        for _ in range(number_of_gifts):
-            u = base_utility.pop(rand.randint(0, len(base_utility))-1)
-            utility.append(u)
-        utilities.update({p: utility})
-
-    return utilities
+    return score
 
 
 def tour_cost(tour: {str: [int]}) -> {str: int}:
@@ -38,18 +19,10 @@ def tour_cost(tour: {str: [int]}) -> {str: int}:
     return costs
 
 
-def utility_score(allocation: [int], utility: [int]) -> int:
-    score = 0
-    for a in allocation:
-        score += utility[a]
-
-    return score
-
-
 def egalitarian_social_welfare(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [([int], int)]}:
     utility_scores = {}
     for agent in allocations.keys():
-        score = utility_score(allocations[agent], utilities[agent])
+        score = allocation_utility(allocations[agent], utilities[agent])
         utility_scores.update({agent: score})
 
     print('utility_scores: ' + str(utility_scores))
@@ -67,7 +40,7 @@ def egalitarian_social_welfare(allocations: {str: [int]}, utilities: {str: [int]
         utility = utilities[woa]
         for agent in allocations.keys():
             allocation = allocations[agent]
-            score = utility_score(allocation, utility)
+            score = allocation_utility(allocation, utility)
             if score < worst_score:
                 better_allocations.append((agent, allocation, score))
         if len(better_allocations) > 0:
@@ -84,7 +57,7 @@ def proportional_fair_share(allocations: {str: [int]}, utilities: {str: [int]}) 
         share = sum(utilities[agent]) / number_of_agents
         utility = utilities[agent]
         allocation = allocations[agent]
-        prop = True if utility_score(allocation, utility) <= share else False
+        prop = True if allocation_utility(allocation, utility) <= share else False
         pfs.update({agent: (share, allocation, prop)})
 
     return pfs
@@ -93,7 +66,7 @@ def proportional_fair_share(allocations: {str: [int]}, utilities: {str: [int]}) 
 def envy_freeness(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [([int], int)]}:
     utility_scores = {}
     for agent in allocations.keys():
-        score = utility_score(allocations[agent], utilities[agent])
+        score = allocation_utility(allocations[agent], utilities[agent])
         utility_scores.update({agent: score})
 
     envious_agents = {}
@@ -104,7 +77,7 @@ def envy_freeness(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [
         for other in allocations.keys():
             if agent != other:
                 allocation = allocations[other]
-                score = utility_score(allocation, utility)
+                score = allocation_utility(allocation, utility)
                 if score < agent_score:
                     better_allocations.append((agent, allocation, score))
             if len(better_allocations) > 0:

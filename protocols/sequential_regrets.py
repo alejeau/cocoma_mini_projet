@@ -14,14 +14,15 @@ import networkx as nx
 
 
 def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {}, free_sites: [int], max_weight):
-    res = copy.deepcopy(positions)
+    allocations = copy.deepcopy(positions)
     free_nodes = copy.deepcopy(free_sites)
+    tour_costs = {agent: [0] for agent in agents}
 
     while free_nodes:
         # for each agent, check the neighbours of the owned nodes, and bid on the one with the smallest weight
         auctions = {}
         for agent in agents:
-            agent_nodes = res[agent]
+            agent_nodes = allocations[agent]
             interesting_couples = set()
             for node in agent_nodes:
                 neighbours = sites.neighbors(node)
@@ -71,7 +72,7 @@ def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {
 
         node = None
         winner = None
-        max_regret = 0
+        max_regret = -1
         for free_node in regrets.keys():
             regret = regrets[free_node][0]
             if regret > max_regret:
@@ -79,10 +80,13 @@ def sequential_auctions_with_regret(agents: [int], sites: nx.Graph, positions: {
                 node = free_node
                 winner = regrets[free_node][1]
 
-        winner_nodes = res[winner]
+        winner_nodes = allocations[winner]
         winner_nodes.append(node)
-        res.update({winner: winner_nodes})
+        allocations.update({winner: winner_nodes})
+        tour_cost = tour_costs[agent]
+        tour_cost.append(max_regret)
+        tour_costs.update({agent: tour_cost})
         # remove the won node from the list of free nodes
         free_nodes.remove(node)
 
-    return res
+    return allocations, tour_costs
