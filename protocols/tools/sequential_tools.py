@@ -62,38 +62,6 @@ def utility_score(allocation: [int], utility: [int]) -> int:
     return score
 
 
-"""
-def egalitarian_social_welfare(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [([int], int)]}:
-    utility_scores = {}
-    for agent in allocations.keys():
-        score = utility_score(allocations[agent], utilities[agent])
-        utility_scores.update({agent: score})
-
-    print('utility_scores: ' + str(utility_scores))
-
-    worst_score = max(utility_scores.values())
-    print('worst_score: ' + str(worst_score))
-    worst_off_agents = []
-    for agent in utility_scores.keys():
-        if utility_scores[agent] == worst_score:
-            worst_off_agents.append(agent)
-
-    wronged_agents = {}
-    for woa in worst_off_agents:
-        better_allocations = []
-        utility = utilities[woa]
-        for agent in allocations.keys():
-            allocation = allocations[agent]
-            score = utility_score(allocation, utility)
-            if score < worst_score:
-                better_allocations.append((agent, allocation, score))
-        if len(better_allocations) > 0:
-            wronged_agents.update({woa: better_allocations})
-
-    return wronged_agents
-"""
-
-
 def proportional_fair_share(allocations: {str: [int]}, tour_costs: {str: [int]}, sites: nx.Graph) -> {str: [([int], int)]}:
     s_utility = sum(sites_utility(sites).values())
     pfs = {}
@@ -153,7 +121,7 @@ def envy_freeness(allocations: {str: [int]}, tour_costs: {str: [int]}, utilities
                 allocation = allocations[other]
                 score = allocation_cost(allocation, utilities)
                 if score < agent_score:
-                    better_allocations.append((agent, allocation, score))
+                    better_allocations.append((other, allocation, score))
             if len(better_allocations) > 0:
                 envious_agents.update({agent: better_allocations})
 
