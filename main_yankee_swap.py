@@ -7,10 +7,11 @@ from protocols.tools import yankee_tools
 
 
 def main_yankee_swap():
-    letters = 'abcdefghijklmnopqrstuvwxyz'
+    # letters = 'abcdefghijklmnopqrstuvwxyz'
     number_of_participants = 6
     number_of_gifts = 13
-    participants = [letters[i] for i in range(number_of_participants)]
+    # participants = [letters[i] for i in range(number_of_participants)]
+    participants = [i for i in range(number_of_participants)]
     gifts = [i for i in range(number_of_gifts)]
     # utilities = tools.random_utilities(participants, number_of_gifts)
     utilities = tools.normalized_utilities(participants, number_of_gifts)

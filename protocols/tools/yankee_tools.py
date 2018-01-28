@@ -79,7 +79,7 @@ def envy_freeness(allocations: {str: [int]}, utilities: {str: [int]}) -> {str: [
                 allocation = allocations[other]
                 score = allocation_utility(allocation, utility)
                 if score < agent_score:
-                    better_allocations.append((agent, allocation, score))
+                    better_allocations.append((other, allocation, score))
             if len(better_allocations) > 0:
                 envious_agents.update({agent: better_allocations})
 

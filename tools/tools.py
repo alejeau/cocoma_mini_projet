@@ -7,7 +7,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-def random_utilities(participants: [str], number_of_gifts: int, max_utility=None) -> {str: [int]}:
+def random_utilities(participants: [int], number_of_gifts: int, max_utility=None) -> {str: [int]}:
     if max_utility is None:
         max_utility = number_of_gifts + np.floor(number_of_gifts/2)
     utilities = {}
@@ -18,7 +18,7 @@ def random_utilities(participants: [str], number_of_gifts: int, max_utility=None
     return utilities
 
 
-def normalized_utilities(participants: [str], number_of_gifts: int) -> {str: [int]}:
+def normalized_utilities(participants: [int], number_of_gifts: int) -> {str: [int]}:
     utilities = {}
     for p in participants:
         base_utility = [i for i in range(number_of_gifts)]
@@ -39,6 +39,19 @@ def generate_sites(n, m, max_weight):
         g[x][y]['weight'] = rand.randint(1, max_weight)
 
     return g
+
+
+def initializer(number_of_agents=3, vertices_number=13, max_weight=10):
+    edges_number = (vertices_number * (vertices_number - 1)) / 2
+    agents = [i for i in range(number_of_agents)]
+
+    sites = generate_sites(vertices_number, edges_number, max_weight)
+    while not nx.is_connected(sites):
+        sites = generate_sites(vertices_number, edges_number, max_weight)
+
+    positions, free_sites = place_agents(agents, sites)
+
+    return agents, sites, positions, free_sites, max_weight
 
 
 def draw_graph(g: nx.Graph):
